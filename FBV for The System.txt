@@ -1,0 +1,81 @@
+TempleteView for system (FBV HomePage)
+==================================
+def landing_page(request):
+    """ 
+    FBV for the hiome page of the system
+    """
+    return render(request, "landing.html")
+
+LeadListView (FBV)
+=======================
+def lead_list(request):
+    """ 
+    FBV for displaying list of leads
+    """
+    # pylint: disable=no-member
+    leads=Lead.objects.all()
+    context={
+        "leads":leads
+    }
+    return render(request,"leads/lead_list.html",context)
+
+LeadDetailView(FBV)
+=============================
+def lead_detail(request, pk):
+    """ 
+    FBV for Display detail of a lead
+    """
+    # pylint: disable=no-member
+    lead=Lead.objects.get(id=pk)
+    contex={
+       "lead":lead
+    }
+    return render(request,"leads/lead_detail.html",contex)
+
+LaadCreateView(FBV)
+=========================
+def lead_create(request):
+    """ 
+    FBV for creating lead
+    """
+    form=LeadModelForm()
+    if request.method=="POST":
+        form=LeadModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/leads")
+    context={
+        "form":form
+    }
+    return render(request,"leads/lead_create.html", context)
+
+LeadUpdateView(FBV)
+=======================
+def lead_update(request, pk):
+    """ 
+    FBV for updating lead
+    """
+    # pylint: disable=no-member
+    lead=Lead.objects.get(id=pk)
+    form=LeadModelForm(instance=lead)
+    if request.method=="POST":
+        form=LeadModelForm(request.POST,instance=lead)
+        if form.is_valid():
+            form.save()
+            return redirect("/leads")
+    context={
+        "form":form,
+        "lead":lead
+    }
+    return render(request,"leads/lead_update.html", context)
+
+LeadDeleteView(FBV)
+====================
+def lead_delete(request, pk):
+    """ 
+    FBV for deleting a laad
+    """
+    # pylint: disable=no-member
+    lead=Lead.objects.get(id=pk)
+    lead.delete()
+    return redirect("/leads")
